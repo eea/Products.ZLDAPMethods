@@ -1,17 +1,15 @@
-# core of LDAP Filter Methods.
-
-
-__version__ = "$Revision: 1.10 $"[11:-2]
-
+""" Core of LDAP Filter Methods.
+"""
 try:
     import ldap              # see if it's on a regular path
 except ImportError:
     from Products.ZLDAPConnection import ldap
-
 from Shared.DC.ZRDB import Aqueduct
 from Shared.DC.ZRDB.Aqueduct import parse, default_input_form
-import Acquisition, Globals, AccessControl.Role, OFS.SimpleItem
-from Globals import HTMLFile, MessageDialog
+import Acquisition, AccessControl.Role, OFS.SimpleItem
+from App.Dialogs import MessageDialog
+from App.special_dtml import HTMLFile
+from Persistence import Persistent
 import DocumentTemplate
 import sys
 try:
@@ -35,7 +33,6 @@ def LDAPConnectionIDs(self):
     """
     ids={}
     StringType = type('')
-    have_key = ids.has_key
     while self is not None:
         if hasattr(self, 'objectValues'):
             for o in self.objectValues():
@@ -43,13 +40,13 @@ def LDAPConnectionIDs(self):
                     and o._isAnLDAPConnection() and hasattr(o,'id')):
                     id=o.id
                     if type(id) is not StringType: id=id()
-                    if not ids.has_key(id):
+                    if id not in ids:
                         if hasattr(o,'title_and_id'): o=o.title_and_id()
                         else: o=id
                         ids[id]=id
         if hasattr(self, 'aq_parent'): self=self.aq_parent
         else: self=None
-    ids=map(lambda item: (item[1], item[0]), ids.items())
+    ids=[(item[1], item[0]) for item in list(ids.items())]
     ids.sort()
     return ids
 
@@ -83,13 +80,14 @@ _ldapScopes = { "ONELEVEL": ldap.SCOPE_ONELEVEL,
 
 class LDAPFilter(Aqueduct.BaseQuery,
     Acquisition.Implicit,
-    Globals.Persistent,
+    Persistent,
     AccessControl.Role.RoleManager,
     OFS.SimpleItem.Item,
     ):
     'LDAP Filter Method'
 
     meta_type = 'LDAP Filter'
+    zmi_icon = 'fa fa-filter'
 
     manage_main = HTMLFile('edit', globals())
     manage_options = (
@@ -193,7 +191,7 @@ class LDAPFilter(Aqueduct.BaseQuery,
                 '<hr><strong>Filter used:</strong><br>\n<pre>\n%s\n</pre>\n<hr>\n'
                 '</body></html>' % (r, src)
                 )
-            report=apply(report,(self,REQUEST),{self.id:res})
+            report=report(*(self,REQUEST), **{self.id:res})
 
             if tb is not None:
                 self.raise_standardErrorMessage(
@@ -210,7 +208,7 @@ class LDAPFilter(Aqueduct.BaseQuery,
         else:
             for dn,attrs in res:
                 s = s + ('<ul><li><b>DN: %s</b></li>\n<ul>' % dn)
-                s = s + str(pretty_results(attrs=attrs.items()))
+                s = s + str(pretty_results(attrs=list(attrs.items())))
                 s = s + '</ul></ul>'
         return s
 
@@ -224,7 +222,7 @@ class LDAPFilter(Aqueduct.BaseQuery,
 
         c = self._getConn()
         if not c:
-            raise "LDAPError", "LDAP Connection not open"
+            raise "LDAP Connection not open"
 
         if hasattr(self, 'aq_parent'):
             p = self.aq_parent
@@ -252,12 +250,12 @@ class LDAPFilter(Aqueduct.BaseQuery,
         f.cook()
         if getSecurityManager is None:
             # working in a pre-Zope 2.2 instance
-            f = apply(f, (p,argdata))       #apply the template
+            f = f(*(p,argdata))       #apply the template
         else:
             # Working with the new security manager (Zope 2.2.x ++)
             security = getSecurityManager()
             security.addContext(self)
-            try:     f = apply(f, (p,), argdata)  # apply the template
+            try:     f = f(*(p,), **argdata)  # apply the template
             finally: security.removeContext(self)
 
         f = str(f)                      #ensure it's a string
@@ -291,7 +289,3 @@ pretty_results=DocumentTemplate.HTML("""\
     </tr>
    </dtml-in>
   </table>""")
-
-
-#import Globals
-#Globals.default__class_init__(LDAPFilter)

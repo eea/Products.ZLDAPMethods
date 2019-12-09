@@ -1,6 +1,5 @@
-<HTML><HEAD><TITLE>New LDAP Method</TITLE>
-</HEAD>
-<BODY BGCOLOR="#FFFFFF" LINK="#000099" VLINK="#555555">
+<dtml-var manage_page_header>
+
 <H2>New LDAP Method</H2>
 
 <dtml-if LDAPConnectionIDs>
@@ -58,4 +57,4 @@ before you can use a Zope LDAP Method.
 </em>
 </dtml-if>
 
-</body></html>
+<dtml-var manage_page_footer>
