@@ -1,0 +1,24 @@
+Fix this problem:
+
+Error Type: SERVER_DOWN
+Error Value: {'desc': "Can't contact LDAP server"}
+
+
+Traceback (innermost last):
+  File /d0/eionet-portal/lib/python/ZPublisher/Publish.py, line 150, in publish_module
+  File /d0/eionet-portal/lib/python/ZPublisher/Publish.py, line 114, in publish
+  File /d0/eionet-portal/lib/python/Zope/__init__.py, line 158, in zpublisher_exception_hook
+    (Object: EIONET)
+  File /d0/eionet-portal/lib/python/ZPublisher/Publish.py, line 98, in publish
+  File /d0/eionet-portal/lib/python/ZPublisher/mapply.py, line 88, in mapply
+    (Object: SiteDir.html)
+  File /d0/eionet-portal/lib/python/ZPublisher/Publish.py, line 39, in call_object
+    (Object: SiteDir.html)
+  File /d0/eionet-portal/lib/python/OFS/DTMLDocument.py, line 127, in __call__
+    (Object: SiteDir.html)
+  File /d0/eionet-portal/lib/python/DocumentTemplate/DT_String.py, line 473, in __call__
+    (Object: SiteDir.html)
+  File /d0/eionet-portal/lib/python/DocumentTemplate/DT_In.py, line 617, in renderwob
+    (Object: sitedir_search)
+  File /d0/eionet-portal/lib/python/Products/ZLDAPMethods/LM.py, line 268, in __call__
+    (Object: sitedir_search)
