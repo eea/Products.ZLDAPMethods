@@ -1,6 +1,6 @@
 """LDAP Filter Methods Package """
 
-import LM
+from . import LM
 
 def initialize(context):
 
@@ -11,4 +11,3 @@ def initialize(context):
         icon = "LDAP_Method_icon.gif",
         legacy = (LM.LDAPConnectionIDs,), #special baby to add to ObjectManagers
         )
-
