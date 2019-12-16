@@ -156,7 +156,8 @@ class LDAPFilter(Aqueduct.BaseQuery,
     def cleanse(self,s):
         import string
         # kill line breaks &c.
-        s = string.join(string.split(s))
+        separator = ''
+        s = separator.join(str.split(s))
         return s
 
     def _connection(self):
