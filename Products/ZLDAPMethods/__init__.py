@@ -1,6 +1,7 @@
-"""LDAP Filter Methods Package """
-
+""" LDAP Filter Methods Package
+"""
 from . import LM
+
 
 def initialize(context):
 

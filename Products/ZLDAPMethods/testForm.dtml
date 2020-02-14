@@ -1,6 +1,5 @@
-<HTML><HEAD><TITLE>New LDAP Method</TITLE>
-</HEAD>
-<BODY BGCOLOR="#FFFFFF" LINK="#000099" VLINK="#555555">
+<dtml-var manage_page_header>
+
 <!--#var manage_tabs-->
 <H2>Test LDAP Method <!--#var title_or_id--></H2>
 
@@ -23,5 +22,4 @@
 </table>
 </form>
 
-</BODY>
-</HTML>
+<dtml-var manage_page_footer>
