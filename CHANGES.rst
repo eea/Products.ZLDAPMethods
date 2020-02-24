@@ -1,6 +1,6 @@
 Changelog
 =========
-1.2 (unreleased)
+1.2 (2020-02-24)
 ----------------
 * bugfix in cleanse method
 
