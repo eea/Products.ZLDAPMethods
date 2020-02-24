@@ -1,5 +1,8 @@
 Changelog
 =========
+1.2 (unreleased)
+----------------
+* bugfix in cleanse method
 
 1.1
 --------------------------
