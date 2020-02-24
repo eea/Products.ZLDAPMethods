@@ -154,9 +154,10 @@ class LDAPFilter(Aqueduct.BaseQuery,
                 action ='./manage_main', )
 
     def cleanse(self,s):
-        import string
         # kill line breaks &c.
-        separator = ''
+        # in order for this to behave as before, the separator needs to be a
+        # blanc not an empty string
+        separator = ' '
         s = separator.join(str.split(s))
         return s
 
