@@ -3,9 +3,12 @@ Changelog
 
 1.3-dev0 - (unreleased)
 ---------------------------
+* Feature: updated Jenkins pipeline
+  [alecghica refs #110159]
+
 1.2 (2020-02-24)
-----------------
-* bugfix in cleanse method
+---------------------------
+* Bug fix: fixed bug in cleanse method
 
 1.1
 --------------------------
@@ -13,4 +16,4 @@ Changelog
 
 1.0
 --------------------------
-* initial release
+* Initial release
