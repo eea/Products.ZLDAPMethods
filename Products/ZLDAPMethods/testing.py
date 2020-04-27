@@ -3,7 +3,7 @@ from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PloneSandboxLayer
 
-import Products.ZLDAPMedthod
+import Products.ZLDAPMedthods
 
 
 class ZLDAPMedthodLayer(PloneSandboxLayer):
@@ -14,7 +14,7 @@ class ZLDAPMedthodLayer(PloneSandboxLayer):
         # Load any other ZCML that is required for your tests.
         # The z3c.autoinclude feature is disabled in the Plone fixture base
         # layer.
-        self.loadZCML(package=Products.ZLDAPMedthod)
+        self.loadZCML(package=Products.ZLDAPMedthods)
 
 
 ZLDAPMedthod_FIXTURE = ZLDAPMedthodLayer()
