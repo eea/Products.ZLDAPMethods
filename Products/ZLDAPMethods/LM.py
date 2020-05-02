@@ -177,6 +177,7 @@ class LDAPFilter(Aqueduct.BaseQuery, Acquisition.Implicit, Persistent,
             return getattr(self, self.connection_id)
 
     def _getConn(self):
+        """_getConn."""
         return self._connection().GetConnection()
 
     # Hacky, Hacky
