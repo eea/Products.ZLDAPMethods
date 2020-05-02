@@ -1,23 +1,25 @@
 """ Core of LDAP Filter Methods.
 """
+# pylint: disable=too-many-instance-attributes,too-many-nested-blocks
+# pylint: disable=too-many-arguments,too-many-branches,too-many-locals
 try:
     import ldap              # see if it's on a regular path
 except ImportError:
     from Products.ZLDAPConnection import ldap
+import sys
 from Shared.DC.ZRDB import Aqueduct
 from Shared.DC.ZRDB.Aqueduct import parse, default_input_form
 import Acquisition
 import AccessControl.Role
+try:
+    from AccessControl import getSecurityManager
+except ImportError:
+    getSecurityManager = None
 import OFS.SimpleItem
 from App.Dialogs import MessageDialog
 from App.special_dtml import HTMLFile
 from Persistence import Persistent
 import DocumentTemplate
-import sys
-try:
-    from AccessControl import getSecurityManager
-except ImportError:
-    getSecurityManager = None
 
 
 class Filter(DocumentTemplate.HTML):
@@ -41,15 +43,15 @@ def LDAPConnectionIDs(self):
             for o in self.objectValues():
                 if (hasattr(o, '_isAnLDAPConnection') and
                         o._isAnLDAPConnection() and hasattr(o, 'id')):
-                    id = o.id
-                    if type(id) is not StringType:
-                        id = id()
+                    c_id = o.id
+                    if not isinstance(c_id, StringType):
+                        c_id = c_id()
                     if id not in ids:
                         if hasattr(o, 'title_and_id'):
                             o = o.title_and_id()
                         else:
-                            o = id
-                        ids[id] = id
+                            o = c_id
+                        ids[c_id] = c_id
         if hasattr(self, 'aq_parent'):
             self = self.aq_parent
         else:
@@ -62,22 +64,22 @@ def LDAPConnectionIDs(self):
 manage_addZLDAPMethodForm = HTMLFile('add', globals())
 
 
-def manage_addZLDAPMethod(self, id, title, connection_id, scope, basedn,
+def manage_addZLDAPMethod(self, m_id, title, connection_id, scope, basedn,
                           filters, arguments, getfromconnection=0,
                           REQUEST=None, submit=None):
     """Add an LDAP Method """
-    filter = LDAPFilter(id, title, connection_id, scope, basedn, arguments,
-                        filters)
-    self._setObject(id, filter)
+    l_filter = LDAPFilter(m_id, title, connection_id, scope, basedn, arguments,
+                          filters)
+    self._setObject(m_id, l_filter)
     if getfromconnection:
-        getattr(self, id).recomputeBaseDN()
+        getattr(self, m_id).recomputeBaseDN()
 
     if REQUEST is not None:
         u = REQUEST['URL1']
         if submit == " Add and Edit ":
-            u = "%s/%s/manage_main" % (u, id)
+            u = "%s/%s/manage_main" % (u, m_id)
         elif submit == " Add and Test ":
-            u = "%s/%s/manage_testForm" % (u, id)
+            u = "%s/%s/manage_testForm" % (u, m_id)
         else:
             u = u + '/manage_main'
 
@@ -108,20 +110,23 @@ class LDAPFilter(Aqueduct.BaseQuery, Acquisition.Implicit, Persistent,
         ('View management screens', ('manage_tabs', 'manage_main',),),
         ('Change LDAP Methods', ('manage_edit',
                                  'manage_testForm', 'manage_test')),
-        ('Use LDAP Methods',    ('__call__', ''), ('Anonymous', 'Manager')),
+        ('Use LDAP Methods', ('__call__', ''), ('Anonymous', 'Manager')),
     )
 
     def manage_testForm(self, REQUEST):
-        " "
+        """manage_testForm.
+
+        :param REQUEST:
+        """
         input_src = default_input_form(self.title_or_id(),
                                        self._arg, 'manage_test',
                                        '<!--#var manage_tabs-->')
         return DocumentTemplate.HTML(input_src)(self, REQUEST, HTTP_REFERER='')
 
-    def __init__(self, id, title, connection_id, scope, basedn,
+    def __init__(self, filter_id, title, connection_id, scope, basedn,
                  arguments, filters):
         """ init method """
-        self.id = id
+        self.id = filter_id
         self.title = title
         self.connection_id = connection_id
         self._scope = _ldapScopes[scope]
@@ -158,9 +163,9 @@ class LDAPFilter(Aqueduct.BaseQuery, Acquisition.Implicit, Persistent,
                 action='./manage_main', )
 
     def cleanse(self, s):
-        # kill line breaks &c.
-        # in order for this to behave as before, the separator needs to be a
-        # blanc not an empty string
+        ''' kill line breaks &c.
+            in order for this to behave as before, the separator needs to be a
+            blanc not an empty string '''
         separator = ' '
         s = separator.join(str.split(s))
         return s
@@ -210,8 +215,12 @@ class LDAPFilter(Aqueduct.BaseQuery, Acquisition.Implicit, Persistent,
             tb = None
 
     def prettyResults(self, res):
+        """prettyResults.
+
+        :param res:
+        """
         s = ""
-        if not res or not len(res):
+        if not res:
             s = "no results"
         else:
             for dn, attrs in res:

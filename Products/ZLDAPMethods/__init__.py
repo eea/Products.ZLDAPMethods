@@ -5,7 +5,10 @@ from . import LM
 
 
 def initialize(context):
+    """initialize.
 
+    :param context:
+    """
     context.registerClass(
         LM.LDAPFilter,
         constructors=(LM.manage_addZLDAPMethodForm,
