@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
+''' Products.ZLDAPMethods installer '''
 from os.path import join
+from setuptools import setup, find_packages
 
 NAME = 'Products.ZLDAPMethods'
 PATH = NAME.split('.') + ['version.txt']
@@ -8,15 +9,15 @@ VERSION = open(join(*PATH)).read().strip()
 setup(name=NAME,
       version=VERSION,
       long_description_content_type="text/x-rst",
-      long_description=open("README.rst").read() + "\n" +
-                       open(join("docs", "HISTORY.txt")).read(),
+      long_description=open("README.rst").read() + "\n" + open(
+          join("docs", "HISTORY.txt")).read(),
       description="ZLDAPMethods Product",
       classifiers=[
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python",
-        "Framework :: Zope :: 2",
-        "Framework :: Plone :: 5.1",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+          "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python",
+          "Framework :: Zope :: 2",
+          "Framework :: Plone :: 5.1",
+          "License :: OSI Approved :: GNU General Public License (GPL)",
       ],
       keywords='',
       author='European Environment Agency: IDM2 A-Team',
@@ -29,5 +30,12 @@ setup(name=NAME,
       install_requires=[
           'setuptools',
           'Products.ZSQLMethods',
+          'python-ldap',
       ],
-)
+      extras_require={
+          'test': [
+              'plone.app.testing',
+              'plone.app.robotframework',
+          ],
+      },
+      )
