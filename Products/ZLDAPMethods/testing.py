@@ -1,27 +1,16 @@
 # -*- coding: utf-8 -*-
-''' create testing layers '''
-from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
-from plone.app.testing import IntegrationTesting
+''' testing module - defining layers '''
 from plone.app.testing import PloneSandboxLayer
-
-import Products.ZLDAPMethods
-
-
-class ZLDAPMethodLayer(PloneSandboxLayer):
-    """ZLDAPMethodLayer."""
-
-    defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
-
-    def setUpZope(self, app, configurationContext):
-        ''' Load any other ZCML that is required for your tests.
-            The z3c.autoinclude feature is disabled in the Plone fixture base
-            layer. '''
-        self.loadZCML(package=Products.ZLDAPMethods)
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import PLONE_FIXTURE
 
 
-ZLDAPMethod_FIXTURE = ZLDAPMethodLayer()
+class EEAFixture(PloneSandboxLayer):
+    """ EEA Testing Policy
+    """
+    defaultBases = (PLONE_FIXTURE,)
 
-ZLDAPMethod_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(ZLDAPMethod_FIXTURE,),
-    name='ZLDAPMethodLayer:IntegrationTesting',
-)
+
+FIXTURE = EEAFixture()
+FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(FIXTURE,), name='ZLDAPMethods:Functional')

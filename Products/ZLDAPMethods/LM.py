@@ -15,7 +15,7 @@ try:
     from AccessControl import getSecurityManager
 except ImportError:
     getSecurityManager = None
-import OFS.SimpleItem
+from OFS.SimpleItem import Item
 from App.Dialogs import MessageDialog
 from App.special_dtml import HTMLFile
 from Persistence import Persistent
@@ -93,7 +93,7 @@ _ldapScopes = {"ONELEVEL": ldap.SCOPE_ONELEVEL,
 
 
 class LDAPFilter(Aqueduct.BaseQuery, Acquisition.Implicit, Persistent,
-                 AccessControl.Role.RoleManager, OFS.SimpleItem.Item,):
+                 AccessControl.Role.RoleManager, Item,):
     '''LDAP Filter Method'''
 
     meta_type = 'LDAP Filter'
