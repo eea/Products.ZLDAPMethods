@@ -1,6 +1,5 @@
 """ LDAP Filter Methods Package
 """
-from . import testing
 from . import LM
 
 
@@ -16,5 +15,3 @@ def initialize(context):
         icon="LDAP_Method_icon.gif",
         legacy=(LM.LDAPConnectionIDs,),
     )
-
-    context.registerClass(testing.ZLDAPConnectionLayer)
